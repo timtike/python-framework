@@ -2,60 +2,9 @@ import socket
 import ssl
 
 
-"""
-作业 1 答案
-===
-
-附带了测试和 https 请求
-
-
-资料:
-
-一、使用 https
-    1, https 请求的默认端口是 443
-    2, https 的 socket 连接需要 import ssl
-        并且使用 s = ssl.wrap_socket(socket.socket()) 来初始化
-
-    试试用这个请求豆瓣电影 top250
-    url = 'https://movie.douban.com/top250'
-
-    你就能得到网页的 html 源代码
-    然后保存为 html 文件 你就能用浏览器打开
-
-
-二、HTTP 协议的 301 状态
-    请求豆瓣电影 top250 (注意协议)
-    http://movie.douban.com/top250
-    返回结果是一个 301
-    301 状态会在 HTTP 头的 Location 部分告诉你应该转向的 URL
-    所以, 如果遇到 301, 就请求新地址并且返回
-        HTTP/1.1 301 Moved Permanently
-        Date: Sun, 05 Jun 2016 12:37:55 GMT
-        Content-Type: text/html
-        Content-Length: 178
-        Connection: keep-alive
-        Keep-Alive: timeout=30
-        Location: https://movie.douban.com/top250
-        Server: dae
-        X-Content-Type-Options: nosniff
-
-        <html>
-        <head><title>301 Moved Permanently</title></head>
-        <body bgcolor="white">
-        <center><h1>301 Moved Permanently</h1></center>
-        <hr><center>nginx</center>
-        </body>
-        </html>
-
-https 的默认端口是 443, 所以你需要在 get 函数中根据协议设置不同的默认端口
-
-"""
-
-
 def parsed_url(url):
     """
     解析 url 返回 (protocol host port path)
-    有的时候有的函数, 它本身就美不起来, 你要做的就是老老实实写
     """
     # 检查协议
     protocol = 'http'
@@ -143,7 +92,6 @@ def parsed_response(r):
     return status_code, headers, body
 
 
-# 复杂的逻辑全部封装成函数
 def get(url):
     """
     用 GET 请求 url 并返回响应
@@ -176,10 +124,10 @@ def main():
     # print('main headers ({})'.format(headers))
     # print('main body', body)
 
-# 以下 test 开头的函数是单元测试
+# 单元测试
 def test_parsed_url():
     """
-    parsed_url 函数很容易出错, 所以我们写测试函数来运行看检测是否正确运行
+    parsed_url 函数很容易出错, 检测是否正确运行
     """
     http = 'http'
     https = 'https'
@@ -197,9 +145,6 @@ def test_parsed_url():
     for t in test_items:
         url, expected = t
         u = parsed_url(url)
-        # assert 是一个语句, 名字叫 断言
-        # 如果断言成功, 条件成立, 则通过测试
-        # 否则为测试失败, 中断程序报错
         e = "parsed_url ERROR, ({}) ({}) ({})".format(url, u, expected)
         assert u == expected, e
 
