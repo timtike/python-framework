@@ -27,11 +27,6 @@ class Model(object):
     """
     @classmethod
     def db_path(cls):
-        """
-        cls 是类名, 谁调用的类名就是谁的
-        classmethod 有一个参数是 class(这里我们用 cls 这个名字)
-        所以我们可以得到 class 的名字
-        """
         classname = cls.__name__
         path = 'data/{}.txt'.format(classname)
         return path
@@ -43,9 +38,6 @@ class Model(object):
         """
         path = cls.db_path()
         models = load(path)
-        # 这里用了列表推导生成一个包含所有 实例 的 list
-        # m 是 dict, 用 cls.new(m) 可以初始化一个 cls 的实例
-        # 不明白就 log 大法看看这些都是啥
         ms = [cls.new(m) for m in models]
         return ms
 
@@ -56,10 +48,6 @@ class Model(object):
 
     @classmethod
     def find_by(cls, **kwargs):
-        """
-        用法如下，kwargs 是只有一个元素的 dict
-        u = User.find_by(username='gua')
-        """
         log('kwargs, ', kwargs)
         k, v = '', ''
         for key, value in kwargs.items():
@@ -73,10 +61,6 @@ class Model(object):
 
     @classmethod
     def find_all(cls, **kwargs):
-        """
-        用法如下，kwargs 是只有一个元素的 dict
-        u = User.find_by(username='gua')
-        """
         log('kwargs, ', kwargs)
         k, v = '', ''
         for key, value in kwargs.items():
@@ -90,21 +74,12 @@ class Model(object):
         return data
 
     def __repr__(self):
-        """
-        __repr__ 是一个魔法方法
-        简单来说, 它的作用是得到类的 字符串表达 形式
-        比如 print(u) 实际上是 print(u.__repr__())
-        """
         classname = self.__class__.__name__
         properties = ['{}: ({})'.format(k, v) for k, v in self.__dict__.items()]
         s = '\n'.join(properties)
         return '< {}\n{} >\n'.format(classname, s)
 
     def save(self):
-        """
-        用 all 方法读取文件中的所有 model 并生成一个 list
-        把 self 添加进去并且保存进文件
-        """
         log('debug save')
         models = self.all()
         log('models', models)
@@ -128,11 +103,8 @@ class Model(object):
                 if m.id == self.id:
                     index = i
                     break
-            # 看看是否找到下标
-            # 如果找到，就替换掉这条数据
             if index > -1:
                 models[index] = self
-        # 保存
         l = [m.__dict__ for m in models]
         path = self.db_path()
         save(l, path)
@@ -140,14 +112,11 @@ class Model(object):
     def remove(self):
         models = self.all()
         if self.__dict__.get('id') is not None:
-            # 有 id 说明已经是存在于数据文件中的数据
-            # 那么就找到这条数据并替换之
             index = -1
             for i, m in enumerate(models):
                 if m.id == self.id:
                     index = i
                     break
-            # 看看是否找到下标
             # 如果找到，就替换掉这条数据
             if index > -1:
                 del models[index]
@@ -159,7 +128,6 @@ class Model(object):
 class User(Model):
     """
     User 是一个保存用户数据的 model
-    现在只有两个属性 username 和 password
     """
     def __init__(self, form):
         self.id = form.get('id', None)
@@ -177,11 +145,6 @@ class User(Model):
         #         return True
         # return False
         return u is not None and u.password == self.password
-        # 这样的代码是不好的，不应该用隐式转换
-        # return u and u.password == self.password
-        """
-        0 None ''
-        """
 
     def validate_register(self):
         return len(self.username) > 2 and len(self.password) > 2
