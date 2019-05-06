@@ -5,7 +5,6 @@ from utils import log
 
 from routes import route_static
 from routes import route_dict
-# 注意要用 from import as 来避免重名
 from routes_todo import route_dict as todo_route
 
 
@@ -68,8 +67,6 @@ def error(request, code=404):
     根据 code 返回不同的错误响应
     目前只有 404
     """
-    # 之前上课我说过不要用数字来作为字典的 key
-    # 但是在 HTTP 协议中 code 都是数字似乎更方便所以打破了这个原则
     e = {
         404: b'HTTP/1.x 404 NOT FOUND\r\n\r\n<h1>NOT FOUND</h1>',
     }
@@ -122,8 +119,6 @@ def run(host='', port=3000):
     """
     启动服务器
     """
-    # 初始化 socket 套路
-    # 使用 with 可以保证程序中断的时候正确关闭 socket 释放占用的端口
     log('start at', '{}:{}'.format(host, port))
     with socket.socket() as s:
         s.bind((host, port))
@@ -162,5 +157,4 @@ if __name__ == '__main__':
         host='',
         port=3000,
     )
-    # 如果不了解 **kwargs 的用法, 上过基础课的请复习函数, 新同学自行搜索
     run(**config)
